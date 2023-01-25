@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { Page } from 'playwright'
-import { Spec, ElementContext, RunOptions, AxeResults, Result } from 'axe-core';
+import { Spec, ElementContext, RunOptions, AxeResults } from 'axe-core';
 
 import { ConfigOptions } from './axe-types.js';
 
@@ -9,7 +9,7 @@ import { ConfigOptions } from './axe-types.js';
 const axeLoc = path.join(process.cwd(), '/node_modules/axe-core/axe.min.js');
 const axe: string = readFileSync(axeLoc, 'utf8');
 
-export async function getReport(uri: string, page: Page) {
+export async function getReport(page: Page) {
   await injectAxe(page);
   const result = await getAxeResults(page);
   return result;
@@ -18,8 +18,8 @@ export async function getReport(uri: string, page: Page) {
 export function evalSeverity(axeResults: AxeResults, acceptable: { serious: number, moderate: number }) {
   const serious = axeResults.violations.filter((violation) => violation.impact === 'serious');
   const moderate = axeResults.violations.filter((violation) => violation.impact === 'moderate');
-  
-  return !(serious.length > acceptable.serious || moderate.length > acceptable.moderate);
+
+  return { ok: !(serious.length > acceptable.serious || moderate.length > acceptable.moderate), serious, moderate };
 }
 
 export const injectAxe = async (page: Page): Promise<void> => {

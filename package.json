@@ -1,7 +1,7 @@
 {
   "name": "@haibun/web-accessibility-axe",
   "type": "module",
-  "version": "1.9.3",
+  "version": "0.0.1",
   "description": "web accessibility test using axe for haibun",
   "main": "index.js",
   "files": [
@@ -31,6 +31,9 @@
     "playwright": "1.29"
   },
   "devDependencies": {
+    "@haibun/domain-webpage": "^1.13.17",
+    "@haibun/storage-fs": "^1.13.17",
+    "@haibun/web-playwright": "^1.13.17",
     "@types/jest": "^29.2.6",
     "eslint": "^8.31.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
