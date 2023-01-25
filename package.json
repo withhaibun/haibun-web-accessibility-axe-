@@ -10,7 +10,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "eslint -c .eslintrc.json --ext .ts,.js src",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules --experimental-import-meta-resolve  jest",
     "coverage": "jest --config jest.config.ts --coverage",
     "test-watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "build": "tsc -b .",

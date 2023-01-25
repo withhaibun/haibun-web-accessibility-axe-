@@ -5,7 +5,7 @@
     "target": "esnext",
     "module": "NodeNext",
     "lib": [
-      "es2020", "DOM"
+      "es2020", "DOM", "ESNext"
     ],
     "types": [
       "node",
