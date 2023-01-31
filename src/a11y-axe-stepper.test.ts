@@ -6,6 +6,12 @@ import StorageFS from '@haibun/storage-fs/build/storage-fs.js';
 import A11yAxe from './a11y-axe-stepper.js';
 import { DEFAULT_DEST } from '@haibun/core/build/lib/defs.js';
 import { getStepperOptionName } from '@haibun/core/build/lib/util/index.js';
+import { BrowserFactory } from '@haibun/web-playwright/build/BrowserFactory.js';
+
+
+afterAll(async () => {
+  await BrowserFactory.closeBrowsers();
+});
 
 describe('a11y test from uri', () => {
   it('passes', async () => {
