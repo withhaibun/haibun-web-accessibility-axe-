@@ -15,12 +15,12 @@ afterAll(async () => {
 
 describe('a11y test from uri', () => {
   it('passes', async () => {
-    const feature = { path: '/features/test.feature', content: `page at http://localhost:8123/passes.html is accessible accepting serious 2 and moderate 2` };
+    const feature = { path: '/features/test.feature', content: `page at http://localhost:8080/passes.html is accessible accepting serious 2 and moderate 2` };
     const result = await testWithDefaults([feature], [A11yAxe]);
     expect(result.ok).toBe(true);
   });
   xit('fails', async () => {
-    const feature = { path: '/features/test.feature', content: `page at http://localhost:8123/passes.html is accessible accepting serious 0 and moderate 0` };
+    const feature = { path: '/features/test.feature', content: `page at http://localhost:8080/passes.html is accessible accepting serious 0 and moderate 0` };
     const result = await testWithDefaults([feature], [A11yAxe]);
     expect(result.ok).toBe(false);
   });
@@ -35,7 +35,7 @@ describe('a11y test from runtime', () => {
       }
     }
     const features = [
-      { path: '/features/test.feature', content: `On the http://localhost:8123/passes.html ${WEB_PAGE}` },
+      { path: '/features/test.feature', content: `On the http://localhost:8080/passes.html ${WEB_PAGE}` },
       { path: '/features/test.feature', content: `page is accessible accepting serious 2 and moderate 2` }
     ];
 
@@ -50,7 +50,7 @@ describe('a11y test from runtime', () => {
       }
     }
     const features = [
-      { path: '/features/test.feature', content: `On the http://localhost:8123/passes.html ${WEB_PAGE}` },
+      { path: '/features/test.feature', content: `On the http://localhost:8080/passes.html ${WEB_PAGE}` },
       { path: '/features/test.feature', content: `page is accessible accepting serious 0 and moderate 0` }
     ];
 
