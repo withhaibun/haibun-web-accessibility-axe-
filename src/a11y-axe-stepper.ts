@@ -37,7 +37,7 @@ class A11yStepper extends AStepper {
     checkA11yWithUri: {
       gwta: `page at {uri} is accessible accepting serious {serious} and moderate {moderate}`,
       action: async ({ uri, serious, moderate }: TNamed) => {
-        const browser = await chromium.launch({ headless: false });
+        const browser = await chromium.launch();
         const page: Page = await browser.newPage();
         await page.goto(uri!);
 
