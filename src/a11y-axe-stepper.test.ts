@@ -10,6 +10,8 @@ import { BrowserFactory } from '@haibun/web-playwright/build/BrowserFactory.js';
 
 import WebServerStepper from '@haibun/web-server-express';
 
+jest.setTimeout(30000);
+
 const PASSES_URI = 'http://localhost:8123/static/passes.html';
 const FAILS_URI = 'http://localhost:8123/static/passes.html';
 
