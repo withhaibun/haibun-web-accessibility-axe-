@@ -18,6 +18,7 @@ const FAILS_URI = 'http://localhost:8123/static/passes.html';
 const options = {
   DEST: DEFAULT_DEST
 };
+
 const extraOptions = {
   [getStepperOptionName(WebPlaywright, 'STORAGE')]: 'StorageFS'
 }
