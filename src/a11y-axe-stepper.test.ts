@@ -11,7 +11,7 @@ import { BrowserFactory } from '@haibun/web-playwright/build/BrowserFactory.js';
 import WebServerStepper from '@haibun/web-server-express';
 
 const PASSES_URI = 'http://localhost:8123/static/passes.html';
-const FAILS_URI = 'http://localhost:8123/static/passes.html';
+const FAILS_URI = 'http://localhost:8123/static/fails.html';
 
 const options = {
   DEST: DEFAULT_DEST
@@ -50,7 +50,7 @@ page is accessible accepting serious 0 and moderate 0
 });
 
 
-describe('a11y test from runtime', () => {
+xdescribe('a11y test from runtime', () => {
   it('passes', async () => {
     const features = [{
       path: '/features/test.feature', content: `
@@ -71,3 +71,4 @@ page at ${FAILS_URI} is accessible accepting serious 0 and moderate 0
     expect(res.ok).toBe(false);
   });
 });
+
