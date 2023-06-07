@@ -47,7 +47,7 @@ class A11yStepper extends AStepper {
           if (evaluation.ok) {
             return actionOK({ axeSuccess: { summary: 'acceptable', details: { axeReport, res: evaluation } } });
           }
-          const message = `not acceptable`;
+          const message = `not acceptable: ${axeReport}`;
           return actionNotOK(message);
         } catch (e) {
           const { message } = { message: 'test' };
