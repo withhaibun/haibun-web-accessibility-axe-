@@ -1,7 +1,7 @@
 {
   "name": "@haibun/web-accessibility-axe",
   "type": "module",
-  "version": "1.28.3",
+  "version": "1.28.5",
   "description": "web accessibility test using axe for haibun",
   "main": "index.js",
   "files": [
@@ -25,12 +25,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@haibun/cli": "1.28.3",
-    "@haibun/core": "1.28.3",
-    "@haibun/domain-webpage": "1.28.3",
-    "@haibun/storage-fs": "1.28.3",
-    "@haibun/web-playwright": "1.28.3",
-    "@haibun/web-server-express": "1.28.3",
+    "@haibun/cli": "1.28.5",
+    "@haibun/core": "1.28.5",
+    "@haibun/domain-webpage": "1.28.5",
+    "@haibun/storage-fs": "1.28.5",
+    "@haibun/web-playwright": "1.28.5",
+    "@haibun/web-server-express": "1.28.5",
     "axe-core": "^4.6.2",
     "playwright": "1.30"
   },
