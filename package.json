@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.28.16",
   "description": "web accessibility test using axe for haibun",
-  "main": "a11y-axe-stepper.js",
+  "main": "build/a11y-axe-stepper.js",
   "files": [
     "build/"
   ],
