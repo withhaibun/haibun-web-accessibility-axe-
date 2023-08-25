@@ -1,4 +1,5 @@
 import { AStorage } from "@haibun/domain-storage/build/AStorage.js";
+import { EMediaTypes } from "@haibun/domain-storage/build/domain-storage.js";
 import { createHtmlReport } from "axe-html-reporter";
 
 export function generateAxeReport(source: string, dest: string, storage: AStorage) {
@@ -6,16 +7,11 @@ export function generateAxeReport(source: string, dest: string, storage: AStorag
     const failuresJson = JSON.parse(json);
     // TODO: normalize failures.json, also find a way to make sure we aren't procesing a stale result
     const axeReport = failuresJson.resulaxeReport;
-    createHtmlReport({
+    const report = createHtmlReport({
         results: axeReport,
         options: {
-            doNotCreateReportFile: true,
-            projectKey: 'JIRA_PROJECT_KEY',
-            outputDir: 'axe-reports',
-            reportFileName: 'exampleReport.html',
+            doNotCreateReportFile: true
         },
     });
-
-
-
+    storage.writeFile(dest, report, EMediaTypes.html);
 }
