@@ -2,11 +2,10 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { Page } from 'playwright'
 import { Spec, ElementContext, RunOptions, AxeResults } from 'axe-core';
-
+import { fileURLToPath } from 'url';
 import { ConfigOptions } from './axe-types.js';
 
-// FIXME use a resolver
-const axeLoc = path.join(process.cwd(), '/node_modules/axe-core/axe.min.js');
+const axeLoc = path.resolve(path.join(dirname(), '..', '..', 'node_modules', 'axe-core', 'axe.min.js'));
 const axe: string = readFileSync(axeLoc, 'utf8');
 
 export async function getReport(page: Page) {
@@ -45,4 +44,10 @@ export const getAxeResults = async (page: Page, context?: ElementContext, option
     , [/*context,*/ options]);
 
   return result;
+}
+
+function dirname() {
+  const __filename = fileURLToPath(import.meta.url);
+
+  return path.dirname(__filename);
 }

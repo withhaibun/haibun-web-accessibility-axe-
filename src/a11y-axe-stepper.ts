@@ -1,5 +1,5 @@
 import { AStepper, TWorld, TNamed, IHasOptions, OK } from '@haibun/core/build/lib/defs.js';
-import { actionNotOK, actionOK, findStepper, stringOrError } from '@haibun/core/build/lib/util/index.js';
+import { actionNotOK, actionOK, findStepper, findStepperFromOption, stringOrError } from '@haibun/core/build/lib/util/index.js';
 import { chromium, Page } from 'playwright';
 import { evalSeverity, getReport } from './lib/a11y-axe.js';
 import { generateAxeReport } from './lib/report.js';
@@ -12,7 +12,7 @@ class A11yStepper extends AStepper implements IHasOptions {
   options = {
     [STORAGE]: {
       required: true,
-      desc: 'Storage for file tests',
+      desc: 'Storage for results',
       parse: (input: string) => stringOrError(input),
     },
   };
@@ -21,7 +21,7 @@ class A11yStepper extends AStepper implements IHasOptions {
   setWorld(world: TWorld, steppers: AStepper[]) {
     super.setWorld(world, steppers);
     this.pageGetter = findStepper<TGetsPage>(steppers, 'WebPlaywright');
-    this.storage = findStepper<AStorage>(steppers, STORAGE);
+    this.storage = findStepperFromOption(steppers, this, world.extraOptions, STORAGE);
   }
 
   steps = {
@@ -72,9 +72,9 @@ class A11yStepper extends AStepper implements IHasOptions {
       }
     },
     generateHTMLRereport: {
-      gwta: `generate HTML report fromm {source} to {dest}`,
+      gwta: `generate HTML report from {source} to {dest}`,
       action: async ({ source, dest }: TNamed) => {
-        generateAxeReport(source!, dest!, this.storage);
+        generateAxeReport(source!, dest!, this.storage!);
         return OK;
       }
     }
