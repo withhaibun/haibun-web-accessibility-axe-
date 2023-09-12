@@ -1,9 +1,10 @@
 import { AStepper, TWorld, TNamed, IHasOptions, OK } from '@haibun/core/build/lib/defs.js';
-import { actionNotOK, actionOK, findStepper, findStepperFromOption, stringOrError } from '@haibun/core/build/lib/util/index.js';
+import { actionNotOK, actionOK, findStepper, maybeFindStepperFromOption, stringOrError } from '@haibun/core/build/lib/util/index.js';
 import { chromium, Page } from 'playwright';
 import { evalSeverity, getReport } from './lib/a11y-axe.js';
 import { generateAxeReport } from './lib/report.js';
 import { AStorage } from '@haibun/domain-storage/build/AStorage.js';
+import { EMediaTypes } from '@haibun/domain-storage/build/domain-storage.js';
 
 const STORAGE = 'STORAGE';
 
@@ -11,7 +12,6 @@ type TGetsPage = { getPage: () => Promise<Page> };
 class A11yStepper extends AStepper implements IHasOptions {
   options = {
     [STORAGE]: {
-      required: true,
       desc: 'Storage for results',
       parse: (input: string) => stringOrError(input),
     },
@@ -21,7 +21,7 @@ class A11yStepper extends AStepper implements IHasOptions {
   setWorld(world: TWorld, steppers: AStepper[]) {
     super.setWorld(world, steppers);
     this.pageGetter = findStepper<TGetsPage>(steppers, 'WebPlaywright');
-    this.storage = findStepperFromOption(steppers, this, world.extraOptions, STORAGE);
+    this.storage = maybeFindStepperFromOption(steppers, this, world.extraOptions, STORAGE);
   }
 
   steps = {
@@ -74,7 +74,12 @@ class A11yStepper extends AStepper implements IHasOptions {
     generateHTMLRereport: {
       gwta: `generate HTML report from {source} to {dest}`,
       action: async ({ source, dest }: TNamed) => {
-        generateAxeReport(source!, dest!, this.storage!);
+        if (!this.storage) {
+          return actionNotOK('Storage option is not configured');
+        }
+        const json = JSON.parse(this.storage.readFile(source!));
+        const report = generateAxeReport(json);
+        this.storage.writeFile(dest!, report, EMediaTypes.html);
         return OK;
       }
     }

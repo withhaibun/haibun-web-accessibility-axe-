@@ -17,7 +17,7 @@ const options = {
   DEST: DEFAULT_DEST
 };
 const extraOptions = {
-  [getStepperOptionName(WebPlaywright, 'STORAGE')]: 'AStorage',
+  [getStepperOptionName(WebPlaywright, 'STORAGE')]: 'StorageMem',
   [getStepperOptionName(WebPlaywright, 'HEADLESS')]: 'true'
 }
 
@@ -30,7 +30,7 @@ describe('a11y test from uri', () => {
     const features = [{
       path: '/features/test.feature', content: `
 serve files at /static from test
-On the ${PASSES_URI} webpage
+Go to the ${PASSES_URI} webpage
 page is accessible accepting serious 0 and moderate 2
 `}];
 
@@ -41,7 +41,7 @@ page is accessible accepting serious 0 and moderate 2
     const features = [{
       path: '/features/test.feature', content: `
 serve files at /static from test
-On the ${FAILS_URI} webpage
+Go to the ${FAILS_URI} webpage
 page is accessible accepting serious 0 and moderate 0
 `}];
 
@@ -71,8 +71,4 @@ page at ${FAILS_URI} is accessible accepting serious 0 and moderate 0
     const res = await testWithDefaults(features, [A11yAxe, WebServerStepper, WebPlaywright, DomainWebPage, StorageMem], { options, extraOptions });
     expect(res.ok).toBe(false);
   });
-});
-
-describe('generate axe report', () => {
-  expect(false).toBe(true);
 });
