@@ -7,7 +7,7 @@ type TFailureResult = {
     }[]
 }
 
-export function generateAxeReport(json: TFailureResult) {
+export function generateHTMLAxeReportFromStepReport(json: TFailureResult) {
     const { results: runResults } = json;
     const reports: any = [];
     for (const result of runResults) {
@@ -26,4 +26,13 @@ export function generateAxeReport(json: TFailureResult) {
         }
     }
     return reports;
+}
+
+export function generateHTMLAxeReportFromBrowserResult(axeReport: object) {
+    return createHtmlReport({
+        results: axeReport,
+        options: {
+            doNotCreateReportFile: true
+        },
+    });
 }

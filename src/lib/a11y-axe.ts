@@ -1,14 +1,21 @@
 import { readFileSync } from 'fs';
+import { createRequire } from 'module';
 import path from 'path';
 import { Page } from 'playwright'
 import { Spec, ElementContext, RunOptions, AxeResults } from 'axe-core';
 import { fileURLToPath } from 'url';
 import { ConfigOptions } from './axe-types.js';
 
-const axeLoc = path.resolve(path.join(dirname(), '..', '..', 'node_modules', 'axe-core', 'axe.min.js'));
+const require = createRequire(import.meta.url);
+
+async function getModulePath() {
+  const modulePath = require.resolve('axe-core');
+  return modulePath;
+}
+const axeLoc = await getModulePath();
 const axe: string = readFileSync(axeLoc, 'utf8');
 
-export async function getReport(page: Page) {
+export async function getAxeBrowserResult(page: Page, html = false) {
   await injectAxe(page);
   const result = await getAxeResults(page);
   return result;

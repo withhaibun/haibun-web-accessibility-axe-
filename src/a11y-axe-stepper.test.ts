@@ -1,5 +1,4 @@
 import { testWithDefaults } from '@haibun/core/build/lib/test/lib.js';
-import WebPlaywright from '@haibun/web-playwright';
 import DomainWebPage from '@haibun/domain-webpage';
 
 import A11yAxe from './a11y-axe-stepper.js';
@@ -9,6 +8,8 @@ import { BrowserFactory } from '@haibun/web-playwright/build/BrowserFactory.js';
 
 import WebServerStepper from '@haibun/web-server-express';
 import StorageMem from '@haibun/storage-mem/build/storage-mem.js';
+import WebPlaywright from '@haibun/web-playwright';
+import { readFileSync } from 'fs';
 
 const PASSES_URI = 'http://localhost:8123/static/passes.html';
 const FAILS_URI = 'http://localhost:8123/static/passes.html';
@@ -72,3 +73,14 @@ page at ${FAILS_URI} is accessible accepting serious 0 and moderate 0
     expect(res.ok).toBe(false);
   });
 });
+
+describe('generate report', () => {
+  test('generates a report from failures.json', async () => {
+    StorageMem.BASE_FS = {
+      'failures.json': readFileSync('./test/failures.json', 'utf-8')
+    }
+    const features = [{ path: '/features/test.feature', content: `generate HTML report from failures.json to report.html` }];
+    const res = await testWithDefaults(features, [A11yAxe, WebPlaywright, DomainWebPage, StorageMem], { options, extraOptions: { ...extraOptions, [getStepperOptionName(A11yAxe, A11yAxe.STORAGE)]: 'StorageMem' } });
+    expect(res.ok).toBe(true);
+  })
+})
