@@ -1,10 +1,11 @@
 import { AStepper, TWorld, TNamed, IHasOptions, OK } from '@haibun/core/build/lib/defs.js';
-import { actionNotOK, actionOK, findStepper, findStepperFromOption, stringOrError } from '@haibun/core/build/lib/util/index.js';
+import { actionNotOK, findStepper, findStepperFromOption, stringOrError } from '@haibun/core/build/lib/util/index.js';
 import { chromium, Page } from 'playwright';
 import { evalSeverity, getAxeBrowserResult } from './lib/a11y-axe.js';
 import { generateHTMLAxeReportFromStepReport, generateHTMLAxeReportFromBrowserResult } from './lib/report.js';
 import { AStorage } from '@haibun/domain-storage/build/AStorage.js';
 import { EMediaTypes } from '@haibun/domain-storage/build/domain-storage.js';
+import { TArtifact, TMessageContext } from '@haibun/core/build/lib/interfaces/logger.js';
 
 type TGetsPage = { getPage: () => Promise<Page> };
 
@@ -30,15 +31,12 @@ class A11yStepper extends AStepper implements IHasOptions {
       action: async ({ serious, moderate }: TNamed) => {
         const page = await this.pageGetter?.getPage();
         if (!page) {
-          return actionNotOK(`no page in runtime`)
+          return actionNotOK(`no page in runtime`);
         }
-
         return await this.checkA11y(page, serious!, moderate!);
-
-      }
+      },
     },
     checkA11yWithUri: {
-      //             page at http://localhost:8123/static/passes.html is accessible accepting serious 0 and moderate 2
       gwta: `page at {uri} is accessible accepting serious {serious} and moderate {moderate}`,
       action: async ({ uri, serious, moderate }: TNamed) => {
         const browser = await chromium.launch();
@@ -50,32 +48,49 @@ class A11yStepper extends AStepper implements IHasOptions {
         // page.close();
         // browser.close();
         return result;
-      }
+      },
     },
     generateHTMLRereport: {
-      gwta: `generate HTML report from {source} to {dest}`,
+      gwta: `extract HTML report from {source} to {dest}`,
       action: async ({ source, dest }: TNamed) => {
         const storage = findStepperFromOption<AStorage>(this.steppers, this, this.getWorld().extraOptions, A11yStepper.STORAGE);
         const json = JSON.parse(storage.readFile(source!));
         const report = generateHTMLAxeReportFromStepReport(json);
         storage.writeFile(dest!, report, EMediaTypes.html);
         return OK;
-      }
-    }
-  }
+      },
+    },
+  };
   async checkA11y(page: Page, serious: string, moderate: string) {
     try {
       const axeReport = await getAxeBrowserResult(page);
-      const evaluation = evalSeverity(axeReport, { serious: parseInt(serious!) || 0, moderate: parseInt(moderate!) || 0 });
+      const evaluation = evalSeverity(axeReport, {
+        serious: parseInt(serious!) || 0,
+        moderate: parseInt(moderate!) || 0,
+      });
       if (evaluation.ok) {
-        return actionOK({ axeSuccess: { summary: 'conditions', details: { axeReport, res: evaluation } } });
+        // TMI
+        return OK;
       }
       const message = `not acceptable`;
       const html = generateHTMLAxeReportFromBrowserResult(axeReport);
-      return actionNotOK(message, { topics: { axeFailure: { summary: message, details: { axeReport, res: evaluation } } } });
+      this.getWorld().logger.error(message, <TMessageContext>{
+        artifact: <TArtifact>{ type: 'html', content: html, event: 'failure' },
+      });
+      return actionNotOK(message, {
+        topics: {
+          axeFailure: {
+            summary: message,
+            report: { html },
+            details: { axeReport, res: evaluation },
+          },
+        },
+      });
     } catch (e) {
       const { message } = { message: 'test' };
-      return actionNotOK(message, { topics: { exception: { summary: message, details: e } } });
+      return actionNotOK(message, {
+        topics: { exception: { summary: message, details: e } },
+      });
     }
   }
 }

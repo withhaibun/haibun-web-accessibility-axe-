@@ -1,9 +1,7 @@
 import { readFileSync } from 'fs';
 import { createRequire } from 'module';
-import path from 'path';
 import { Page } from 'playwright'
 import { Spec, ElementContext, RunOptions, AxeResults } from 'axe-core';
-import { fileURLToPath } from 'url';
 import { ConfigOptions } from './axe-types.js';
 
 const require = createRequire(import.meta.url);
@@ -15,7 +13,7 @@ async function getModulePath() {
 const axeLoc = await getModulePath();
 const axe: string = readFileSync(axeLoc, 'utf8');
 
-export async function getAxeBrowserResult(page: Page, html = false) {
+export async function getAxeBrowserResult(page: Page) {
   await injectAxe(page);
   const result = await getAxeResults(page);
   return result;
@@ -51,10 +49,4 @@ export const getAxeResults = async (page: Page, context?: ElementContext, option
     , [/*context,*/ options]);
 
   return result;
-}
-
-function dirname() {
-  const __filename = fileURLToPath(import.meta.url);
-
-  return path.dirname(__filename);
 }
