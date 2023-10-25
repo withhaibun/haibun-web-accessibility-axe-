@@ -5,7 +5,7 @@ import { evalSeverity, getAxeBrowserResult } from './lib/a11y-axe.js';
 import { generateHTMLAxeReportFromStepReport, generateHTMLAxeReportFromBrowserResult } from './lib/report.js';
 import { AStorage } from '@haibun/domain-storage/build/AStorage.js';
 import { EMediaTypes } from '@haibun/domain-storage/build/domain-storage.js';
-import { TArtifact, TArtifactMessageContext, TMessageContext } from '@haibun/core/build/lib/interfaces/logger.js';
+import { TArtifactMessageContext } from '@haibun/core/build/lib/interfaces/logger.js';
 
 type TGetsPage = { getPage: () => Promise<Page> };
 
@@ -33,7 +33,7 @@ class A11yStepper extends AStepper implements IHasOptions {
         if (!page) {
           return actionNotOK(`no page in runtime`);
         }
-        return await this.checkA11y(page, serious!, moderate!, step.seq, 'action');
+        return await this.checkA11y(page, serious!, moderate!, step);
       },
     },
     checkA11yWithUri: {
@@ -43,7 +43,7 @@ class A11yStepper extends AStepper implements IHasOptions {
         const page: Page = await browser.newPage();
         await page.goto(uri!);
 
-        const result = await this.checkA11y(page, serious!, moderate!, step.seq, 'action');
+        const result = await this.checkA11y(page, serious!, moderate!, step);
 
         // page.close();
         // browser.close();
@@ -61,7 +61,7 @@ class A11yStepper extends AStepper implements IHasOptions {
       },
     },
   };
-  async checkA11y(page: Page, serious: string, moderate: string, seq: number, stage: string) {
+  async checkA11y(page: Page, serious: string, moderate: string, step: TVStep) {
     try {
       const axeReport = await getAxeBrowserResult(page);
       const evaluation = evalSeverity(axeReport, {
@@ -74,7 +74,7 @@ class A11yStepper extends AStepper implements IHasOptions {
       }
       const message = `not acceptable`;
       const html = generateHTMLAxeReportFromBrowserResult(axeReport);
-      this.getWorld().logger.error(message, <TArtifactMessageContext>{ topic: { seq: seq, event: 'failure', stage }, artifact: { type: 'html', content: html, }, tag: this.getWorld().tag });
+      this.getWorld().logger.error(message, <TArtifactMessageContext>{ topic: { step, event: 'failure', stage: 'action' }, artifact: { type: 'html', content: html, }, tag: this.getWorld().tag });
       return actionNotOK(message, {
         topics: {
           axeFailure: {
