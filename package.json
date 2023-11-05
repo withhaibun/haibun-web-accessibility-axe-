@@ -1,7 +1,7 @@
 {
   "name": "@haibun/web-accessibility-axe",
   "type": "module",
-  "version": "1.31.2",
+  "version": "1.31.3",
   "description": "web accessibility test using axe for haibun",
   "main": "build/a11y-axe-stepper.js",
   "files": [
