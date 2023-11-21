@@ -1,15 +1,19 @@
 import { readFileSync } from 'fs';
-import path from 'path';
+import { createRequire } from 'module';
 import { Page } from 'playwright'
 import { Spec, ElementContext, RunOptions, AxeResults } from 'axe-core';
-
 import { ConfigOptions } from './axe-types.js';
 
-// FIXME use a resolver
-const axeLoc = path.join(process.cwd(), '/node_modules/axe-core/axe.min.js');
+const require = createRequire(import.meta.url);
+
+async function getModulePath() {
+  const modulePath = require.resolve('axe-core');
+  return modulePath;
+}
+const axeLoc = await getModulePath();
 const axe: string = readFileSync(axeLoc, 'utf8');
 
-export async function getReport(page: Page) {
+export async function getAxeBrowserResult(page: Page) {
   await injectAxe(page);
   const result = await getAxeResults(page);
   return result;
