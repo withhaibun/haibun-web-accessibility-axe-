@@ -36,7 +36,6 @@ page is accessible accepting serious 0 and moderate 2
 `}];
 
     const res = await testWithDefaults(features, [A11yAxe, WebServerStepper, WebPlaywright, DomainWebPage, StorageMem], { options, extraOptions });
-    console.log('🤑', JSON.stringify(res.failure, null, 2));
     expect(res.ok).toBe(true);
   });
   it('fails', async () => {
