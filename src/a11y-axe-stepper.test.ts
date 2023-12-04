@@ -79,7 +79,7 @@ describe('generate report', () => {
     StorageMem.BASE_FS = {
       'failures.json': readFileSync('./test/failures.json', 'utf-8')
     }
-    const features = [{ path: '/features/test.feature', content: `generate HTML report from failures.json to report.html` }];
+    const features = [{ path: '/features/test.feature', content: `extract HTML report from failures.json to /report.html\nstorage entry /report.html exists` }];
     const res = await testWithDefaults(features, [A11yAxe, WebPlaywright, DomainWebPage, StorageMem], { options, extraOptions: { ...extraOptions, [getStepperOptionName(A11yAxe, A11yAxe.STORAGE)]: 'StorageMem' } });
     expect(res.ok).toBe(true);
   })

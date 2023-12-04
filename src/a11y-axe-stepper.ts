@@ -56,7 +56,7 @@ class A11yStepper extends AStepper implements IHasOptions {
         const storage = findStepperFromOption<AStorage>(this.steppers, this, this.getWorld().extraOptions, A11yStepper.STORAGE);
         const json = JSON.parse(storage.readFile(source!));
         const report = generateHTMLAxeReportFromStepReport(json);
-        storage.writeFile(dest!, report, EMediaTypes.html);
+        await storage.writeFile(dest!, report, EMediaTypes.html);
         return OK;
       },
     },
